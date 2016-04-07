@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# helper functions\n\nlibrary(ggplot2)\nlibrary(\"highcharter\")\n\nsanitize <- function(str, keyl=1, let=1) {\n  # input: raw text string\n  # output: relative frequencies\n  str <- substr(str, 1, 30000)\n  newstr <- gsub(\"[^[:alpha:]]\", \"\", str)\n  newstr <- tolower(newstr)\n  chars <- strsplit(newstr, NULL)[[1]]\n  nl <- length(chars)\n  seqind <- seq(let, nl, keyl)\n  freqs <- summary(factor(chars[seqind]))\n  rfreqs <- freqs/sum(freqs)\n  return(freqs)\n}\n\nfill_freqs <- function(freqs, pos = 0) {\n  # input: frequencies (not necessarily for all 26 letters)\n  # output: frequencies for all 26 letters\n  # moves over the frequencies by pos shift\n  \n  # make 0-count vector\n  alphabet <- rep(1, 26)\n  names(alphabet) <- letters\n  \n  # alphabet_filled <- sapply(1:26, function(x) {freqs[names(alphabet)[x]]})\n  alphabet_filled <- freqs[names(alphabet)]\n  alphabet_filled[is.na(alphabet_filled)] <- 0\n  \n  names(alphabet_filled) <- letters\n  # move over the frequencies by pos\n  shiftedind <- ((1:26) + pos - 1) %% 26 + 1 \n  alphabet_filled <- alphabet_filled[shiftedind]\n  names(alphabet_filled) <- letters\n  alphabet_filled <- as.data.frame(alphabet_filled)\n  names(alphabet_filled) <- \"rfreqs\"\n  return(alphabet_filled)\n} \n\nmod1 <- function(v, n) {\n  # mod1(1:20, 6) => 1 2 3 4 5 6 1 2 3 4 5 6 1 2 3 4 5 6 1 2\n  ((v - 1) %% n) + 1\n}\n\nstr2ints <- function(s) {\n  # input: character string (s)\n  # ouput: integer vector representing letters (position) from character string\n  as.integer(Filter(Negate(is.na),\n    factor(levels = LETTERS, strsplit(toupper(s), \"\")[[1]])))\n}\n\nvigen <- function(input, key, decrypt = F) {\n  input <- str2ints(input)\n  key <- rep(str2ints(key), len = length(input)) - 1\n  paste(collapse = \"\",\n        LETTERS[mod1(input + (if (decrypt) -1 else 1)*key, length(LETTERS))]\n  )\n}\n\n# function to build chart -- set and edit options here\nbuild_highchart <- function(str, ref, keyl, pos, let) {\n\n  freqs <- sanitize(str,keyl,let)\n  rfreqs <- freqs/sum(freqs)\n  alphabet_filled_freqs <- fill_freqs(freqs,pos)\n  alphabet_filled_rfreqs <- fill_freqs(rfreqs,pos)\n\n  alphabet_filled_ref <- fill_freqs(ref,0)\n\n  hc <- highchart() %>%\n    hc_chart(type = \"column\",\n             animation = \"false\",\n             marginRight = \"0\"\n    ) %>%\n    hc_plotOptions(\n      column = list(\n        grouping = FALSE,\n        shadow = FALSE,\n        borderWidth = 0,\n        animation = FALSE\n    )) %>%\n    hc_yAxis(\n      visible = FALSE,\n      lineWidth = 0,\n      gridLineWidth = 0,\n      minorGridLineWidth = 0,\n      tickLength = 0,\n      tickWidth = 0\n    ) %>%\n    hc_legend(\n      enabled = T,\n      align = \"right\",\n      verticalAlign = \"top\",\n      layout = \"vertical\"\n    ) %>%\n    hc_tooltip(\n      enabled = T,\n      valueDecimals = 3\n    ) %>%\n    hc_xAxis(categories = LETTERS) %>%\n    hc_add_series(name = \"Reference Distribution\", color = \"rgba(223, 83, 83, .5)\", data = alphabet_filled_ref$rfreqs, pointPadding = -0.1, pointPlacement = 0) %>%\n    hc_add_series(name = \"Input Frequencies\", color = \"#3182bd\", data = alphabet_filled_rfreqs$rfreqs, pointPadding = 0.2, pointPlacement = 0)\n  \n  # Use the color codes below to set the chart color for each series\n  # color options = {light blue: #9ecae1, dark blue: #3182bd, light red: rgba(223, 83, 83, .5), red: #9A3334, other red: #CC6666, purple: rgba(165,170,217,1), \n  # dark purple: rgba(126,86,134,.9), orange: rgba(248,161,63,1), dark orange: rgba(186,60,61,.9)\n  \n  return(hc)\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "created" : 1458513003165.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1104834971",
+    "id" : "A3569950",
+    "lastKnownWriteTime" : 1459739951,
+    "last_content_update" : 0,
+    "path" : "~/Development/susan/probability/vigenere_updated/helpers.R",
+    "project_path" : "helpers.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

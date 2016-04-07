@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#ui.R\nlibrary(highcharter)\n\nshinyUI(fluidPage(\n  tags$head(\n    tags$link(rel = \"stylesheet\", type = \"text/css\", href = \"styles.css\")\n  ),\n  \n  \n  titlePanel(\"De Vigenère Cipher\"),\n  \n  fluidRow(\n    \n    column(3, \n      wellPanel(\n\n        textInput(inputId = \"enter\", label = \"Text Input\", placeholder = \"Enter cyphertext here...\", value = initial_txt),\n        \n        radioButtons(\"ref\", \n                     label = \"Reference Distribution\",\n                     choices = list(\"Oxford dictionary\", \"English literature classics\"),\n                     selected = \"Oxford dictionary\"),\n        \n        sliderInput(\"KL\",\n                    \"Keyword Length\",\n                    min = 1,\n                    max = 10,\n                    value = 3),\n        \n        uiOutput(\"letter_slider\"),\n        \n        hr(),\n        \n        helpText(HTML(\"\n                      <em><ol><h5>Building a Keyword</h5>\n                      <li>Enter encrypted text above</li>\n                      <li>Select a 'Keyword Length'</li>\n                      <li>Adjust the 'Shift' slider to match bars (frequencies)</li>\n                      <li>Repeat process for each 'Letter Position' (1:length(keyword))</li>\n                      <li>Go to 'Decrypt Text' panel to test the created Keyword</li>\n                      </ol></em>\"))\n \n      ) # end well panel\n    ), # end column\n    \n  \n    column(8,\n      tabsetPanel(\n        tabPanel(\"Keyword Analysis\",\n          fluidRow(\n            column(6,\n              # reactive keyword output\n              h3(\"Keyword\", textOutput(\"key\"), align = \"center\")\n            ),\n            column(6,\n              # decrypted text output\n              h3(\"Sample Text\", textOutput(\"sample\"), align = \"center\")\n            )\n          ), # end info/text row\n          \n          fluidRow(\n            highchartOutput(\"chart\"),\n            sliderInput(\"POS\",\n                        label = \"Shift\",\n                        min = 0,\n                        max = 25,\n                        value = 0,\n                        ticks = FALSE,\n                        width = '100%')\n          ) # end main plot/slider row      \n        ), # end tabpanel\n        \n        tabPanel(\"Decrypt Text\",\n          fluidRow(\n            # enter keyword text\n            br(),\n            column(4, \n              textInput(inputId = \"key_input\", label = NULL, placeholder = \"Enter keyword here...\")\n            ),\n            column(2,\n              actionButton(inputId = \"decrypt\", label = \"Decrypt\", align = \"left\")\n            )\n          ), # end fluidRow\n        \n          fluidRow(\n            column(12,\n              verbatimTextOutput(\"decrypted\")\n            )\n          )\n        ) # end tabPanel\n\n      ) # end tabsetpanel\n    ) # end column        \n  ) # end fluidRow\n)) # end shinyUI(fluidPage(",
+    "created" : 1458513067674.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3544213908",
+    "id" : "649BB484",
+    "lastKnownWriteTime" : 1460060559,
+    "last_content_update" : 1460060559444,
+    "path" : "~/Development/susan/probability/vigenere_updated/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
